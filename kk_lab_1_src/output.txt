@@ -1,0 +1,37 @@
+{
+  "lexems": [
+    "keyWords: 'Var' (line: 1 at 3)",
+    "identifier: 'a' (line: 1 at 5)",
+    "keySymbols: ',' (line: 1 at 5)",
+    "identifier: 'b' (line: 1 at 7)",
+    "keySymbols: ';' (line: 1 at 7)",
+    "keyWords: 'Begin' (line: 2 at 15)",
+    "identifier: 'c' (line: 3 at 19)",
+    "identifier: 'c' (line: 3 at 23)",
+    "binaryOperators: '+' (line: 3 at 23)",
+    "constantNumbers: '1' (line: 3 at 25)",
+    "identifier: 'b' (line: 4 at 28)",
+    "assignSymbol: ':=' (line: 4 at 30)",
+    "constantNumbers: '1' (line: 4 at 31)",
+    "identifier: 'b' (line: 5 at 34)",
+    "binaryOperators: '+' (line: 5 at 34)",
+    "constantNumbers: '2' (line: 5 at 36)",
+    "constantNumbers: '22' (line: 6 at 40)",
+    "binaryOperators: '+' (line: 6 at 40)",
+    "keySymbols: '(' (line: 6 at 41)",
+    "constantNumbers: '35' (line: 6 at 44)",
+    "binaryOperators: '+' (line: 6 at 44)",
+    "constantNumbers: '1125' (line: 6 at 49)",
+    "keySymbols: ')' (line: 6 at 49)",
+    "identifier: 'd' (line: 7 at 53)",
+    "binaryOperators: '+' (line: 7 at 53)",
+    "identifier: 'e' (line: 7 at 55)",
+    "keySymbols: ';' (line: 7 at 55)",
+    "keyWords: 'End' (line: 8 at 61)"
+  ],
+  "errors": [
+    "Assign symbol must look like := (line: 3 at 20)",
+    "Unexpected character: '.' (line: 3 at 20)",
+    "Unexpected character: '=' (line: 3 at 21)"
+  ]
+}
