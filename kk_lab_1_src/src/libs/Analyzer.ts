@@ -1,6 +1,6 @@
+import { skipSymbols } from "../assets";
 import { Lexem, lexemType } from "./Lexem";
 import { LexemError } from "./LexemError";
-import { skipSymbols } from "./assets";
 
 // Состояния конечного автомата
 enum AnalyzerState {
@@ -210,9 +210,9 @@ export class Analyzer {
         // Состояние считывания ключевого СИМВОЛА
         case AnalyzerState.KEYSYMBOL:
           // Сразу записываем без добавления в буфер и берем след. символ, => READ
+          this.getNext();
           this.addToLexems("keySymbols", this.char);
           this.clearBuff();
-          this.getNext();
           this.state = AnalyzerState.READ;
           break;
 

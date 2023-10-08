@@ -1,4 +1,4 @@
-import { alphabet, integers } from "./assets";
+import { alphabet, integers } from "../assets";
 
 // ТИПЫ (КЛАССЫ) ЛЕКСЕМ и их возможные значения (составные значения)
 export const lexemType = {

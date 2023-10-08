@@ -1,17 +1,14 @@
 {
-  "name": "kk_lab_1_src",
+  "name": "kk_lab_2_src",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "/dist"
-  ],
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "dev": "npx nodemon ./index.ts"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -19,5 +16,8 @@
     "nodemon": "^3.0.1",
     "typescript": "^5.2.2",
     "ts-node": "^10.9.1"
+  },
+  "dependencies": {
+    "lex": "file:../kk_lab_1_src"
   }
 }
