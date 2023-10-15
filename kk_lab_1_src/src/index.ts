@@ -1,2 +1,2 @@
 export * from "./assets";
-export * from "./libs";
+export * from "./classes";

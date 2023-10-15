@@ -13,6 +13,16 @@ export function writeOutputToFile(path: string, data: string) {
 // Символы пропуска
 export const skipSymbols = [" ", "\t", "\0", "\r", "\n"];
 
+export const keyWords = ["Begin", "Var", "End"];
+
+export const keySymbols = ["(", ")", ";", ","];
+
+export const assignSymbol = ":=";
+
+export const unaryOperators = ["-"];
+
+export const binaryOperators = ["-", "+", "*", "/"];
+
 // Символы цифр
 export const integers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 

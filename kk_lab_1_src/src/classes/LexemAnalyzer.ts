@@ -3,7 +3,7 @@ import { Lexem, lexemType } from "./Lexem";
 import { LexemError } from "./LexemError";
 
 // Состояния конечного автомата
-enum AnalyzerState {
+enum LexemAnalyzerState {
   READ = "READ",
   SKIP = "SKIP",
   NUM = "NUM",
@@ -16,7 +16,7 @@ enum AnalyzerState {
 }
 
 // Класс лексического анализатора
-export class Analyzer {
+export class LexemAnalyzer {
   // Хранение сформированных лексем
   private lexems: Lexem[] = [];
   // Хранение полученных ошибок
@@ -28,7 +28,7 @@ export class Analyzer {
   private currentPosition: number = 0;
 
   // Состояние конечного автомата
-  private state: AnalyzerState = AnalyzerState.READ;
+  private state: LexemAnalyzerState = LexemAnalyzerState.READ;
 
   // Переменная для хранения полученного input текста
   private text: string;
@@ -88,59 +88,59 @@ export class Analyzer {
   // Основная функция
   run() {
     // Цикл работает, пока состояние конечного автомата не перейдет в FIN
-    while (this.state !== AnalyzerState.FIN) {
+    while (this.state !== LexemAnalyzerState.FIN) {
       // Ветвление в зависимости от состояния
       switch (this.state) {
         // Состояние распознавания символа
-        case AnalyzerState.READ:
+        case LexemAnalyzerState.READ:
           // Если символ undefined - т.е. input закончился, то переходим в состояние FIN
           if (this.char === undefined) {
-            this.state = AnalyzerState.FIN;
+            this.state = LexemAnalyzerState.FIN;
             break;
           }
 
           // Если пробела/пропуска строки
           if (skipSymbols.includes(this.char)) {
-            this.state = AnalyzerState.SKIP;
+            this.state = LexemAnalyzerState.SKIP;
             break;
           }
 
           // Если цифра
           if (isNumber(this.char)) {
-            this.state = AnalyzerState.NUM;
+            this.state = LexemAnalyzerState.NUM;
             break;
           }
 
           // Если буква
           if (isLetter(this.char)) {
-            this.state = AnalyzerState.WORD;
+            this.state = LexemAnalyzerState.WORD;
             break;
           }
 
           // Если ключевой символ
           if (isKeySymbol(this.char)) {
-            this.state = AnalyzerState.KEYSYMBOL;
+            this.state = LexemAnalyzerState.KEYSYMBOL;
             break;
           }
 
           // Если оператор (любой)
-          if ([...lexemType.binaryOperators, ...lexemType.unaryOperators].includes(this.char)) {
-            this.state = AnalyzerState.OPERATOR;
+          if (lexemType.operators.includes(this.char)) {
+            this.state = LexemAnalyzerState.OPERATOR;
             break;
           }
 
           // Если символ присваивания (точнее его начало, в моем случае ":")
           if (lexemType.assignSymbol[0].includes(this.char)) {
-            this.state = AnalyzerState.ASSIGNSYMBOL;
+            this.state = LexemAnalyzerState.ASSIGNSYMBOL;
             break;
           }
 
           // Если никакое состояние не подошло - ошибка - неизвестный символ
-          this.state = AnalyzerState.ERROR;
+          this.state = LexemAnalyzerState.ERROR;
           break;
 
         // Состояние пропуска из-за пробела/пропуска строки
-        case AnalyzerState.SKIP:
+        case LexemAnalyzerState.SKIP:
           // Если переход на след. строку, то увеличиваем счетчик строк
           if (this.char === "\n") {
             this.currentLine = this.currentLine + 1;
@@ -149,11 +149,11 @@ export class Analyzer {
           // На всякий случай чистим буфер и берем след символ и => READ
           this.clearBuff();
           this.getNext();
-          this.state = AnalyzerState.READ;
+          this.state = LexemAnalyzerState.READ;
           break;
 
         // Состояние считывания цифры
-        case AnalyzerState.NUM:
+        case LexemAnalyzerState.NUM:
           // Если очередной символ цифра - то добавляем к буфферу и считываем дальше
           if (isNumber(this.char)) {
             this.addToBuff();
@@ -165,7 +165,7 @@ export class Analyzer {
           if (isLetter(this.char)) {
             this.addToLexemErrors("Constant can not contain letters", this.buff);
             this.clearBuff();
-            this.state = AnalyzerState.READ;
+            this.state = LexemAnalyzerState.READ;
             break;
           }
 
@@ -173,11 +173,11 @@ export class Analyzer {
           // Добавляем лексему, чистим буфер и => READ
           this.addToLexems("constantNumbers", this.buff);
           this.clearBuff();
-          this.state = AnalyzerState.READ;
+          this.state = LexemAnalyzerState.READ;
           break;
 
         // Состояние считывания ключевого слова/идентификатора
-        case AnalyzerState.WORD:
+        case LexemAnalyzerState.WORD:
           // Если очередной символ буква алфавита - то добавляем к буфферу и считываем дальше
           if (isLetter(this.char)) {
             this.addToBuff();
@@ -189,7 +189,7 @@ export class Analyzer {
           if (isNumber(this.char)) {
             this.addToLexemErrors("Identifier or key word can not contain numbers", this.buff);
             this.clearBuff();
-            this.state = AnalyzerState.READ;
+            this.state = LexemAnalyzerState.READ;
             break;
           }
 
@@ -197,47 +197,44 @@ export class Analyzer {
           if (lexemType.keyWords.includes(this.buff)) {
             this.addToLexems("keyWords", this.buff);
             this.clearBuff();
-            this.state = AnalyzerState.READ;
+            this.state = LexemAnalyzerState.READ;
             break;
           }
 
           // Если ключевые слова не включают считанный буфер, то добавляем в лексемы как идентификатор, чистим буфер и => READ
           this.addToLexems("identifier", this.buff);
           this.clearBuff();
-          this.state = AnalyzerState.READ;
+          this.state = LexemAnalyzerState.READ;
           break;
 
         // Состояние считывания ключевого СИМВОЛА
-        case AnalyzerState.KEYSYMBOL:
+        case LexemAnalyzerState.KEYSYMBOL:
           // Сразу записываем без добавления в буфер и берем след. символ, => READ
-          this.getNext();
-          this.addToLexems("keySymbols", this.char);
           this.clearBuff();
-          this.state = AnalyzerState.READ;
+          this.addToBuff();
+          this.getNext();
+          this.addToLexems("keySymbols", this.buff);
+          this.clearBuff();
+          this.state = LexemAnalyzerState.READ;
           break;
 
         // Состояние считывания ключевого оператора
-        case AnalyzerState.OPERATOR:
+        case LexemAnalyzerState.OPERATOR:
           // Здесь тоже берем символ сразу без буфера, т.к. оператор - длиной 1
 
-          // Если есть в бинарных операторах данный символ, то пишем
-          if (lexemType.binaryOperators.includes(this.char)) {
-            this.addToLexems("binaryOperators", this.char);
-          }
-
-          // Если есть в унарных операторах данный символ, то пишем (в лексике не проверяем какой относительно переменной)
-          if (lexemType.unaryOperators.includes(this.char)) {
-            this.addToLexems("unaryOperators", this.char);
+          // Если есть в операторах данный символ, то пишем
+          if (lexemType.operators.includes(this.char)) {
+            this.addToLexems("operators", this.char);
           }
 
           // Чистим буффер на всякий случай и берем след. символ, => READ
           this.clearBuff();
           this.getNext();
-          this.state = AnalyzerState.READ;
+          this.state = LexemAnalyzerState.READ;
           break;
 
         // Состояние считывания оператора присваивания
-        case AnalyzerState.ASSIGNSYMBOL:
+        case LexemAnalyzerState.ASSIGNSYMBOL:
           // Если оператор присваивания (:=) включает данный символ и буфер не равен этому оператору,
           // то добавляем в буфер (т.к. он не из одного символа)
           if (lexemType.assignSymbol.includes(this.char) && lexemType.assignSymbol !== this.buff) {
@@ -250,20 +247,20 @@ export class Analyzer {
           if (lexemType.assignSymbol === this.buff) {
             this.addToLexems("assignSymbol", this.buff);
             this.clearBuff();
-            this.state = AnalyzerState.READ;
+            this.state = LexemAnalyzerState.READ;
             break;
           }
 
           // Если ни одно условие не прошло - ошибка
           this.addToLexemErrors(`Assign symbol must look like ${lexemType.assignSymbol}`, null);
           this.clearBuff();
-          this.state = AnalyzerState.READ;
+          this.state = LexemAnalyzerState.READ;
 
         // Состояние записи ошибки (неизвестный символ)
-        case AnalyzerState.ERROR:
+        case LexemAnalyzerState.ERROR:
           this.addToLexemErrors(`Unexpected character`, this.char);
           this.clearBuff();
-          this.state = AnalyzerState.READ;
+          this.state = LexemAnalyzerState.READ;
           this.getNext();
 
         default:
@@ -273,16 +270,23 @@ export class Analyzer {
     }
 
     // Объект результата
-    const result = {
-      lexems: this.lexems.map((l) => l.getLexemAsString()),
-      errors: this.lexemErrors.map((e) => e.getErrorAsString()),
+    const resultJson = {
+      lexems: this.lexems,
+      errors: this.lexemErrors,
     };
 
-    // Выводим результат
-    console.log(result);
+    // Объект результата
+    const resultString = JSON.stringify(
+      {
+        lexems: this.lexems.map((l) => l.getLexemAsString()),
+        errors: this.lexemErrors.map((e) => e.getErrorAsString()),
+      },
+      null,
+      2
+    );
 
     // Возвращаем результат
-    return JSON.stringify(result, null, 2);
+    return { resultJson, resultString };
   }
 }
 
