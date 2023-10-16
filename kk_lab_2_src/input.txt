@@ -1,6 +1,6 @@
 Var a,b;c,d
 
-BegiSSSSSn
+Begin
   a := 1
   b := 2
   b := sf+sf+sf

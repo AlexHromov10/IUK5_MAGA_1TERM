@@ -1,7 +1,8 @@
-import { Lexem, binaryOperators, unaryOperators } from "lex";
+import { Lexem, binaryOperators, unaryOperators, writeOutputToFile } from "lex";
 
 // Класс синтаксического анализатора
 export class SyntaxAnalyzer {
+  private outputPath: string;
   // Хранение полученных лексем
   private lexems: Lexem[] = [];
 
@@ -12,8 +13,9 @@ export class SyntaxAnalyzer {
   private assignationCount: number = 0;
 
   // В конструкторе получаем список лексем программы
-  constructor(lexems: Lexem[]) {
+  constructor(lexems: Lexem[], outputPath: string) {
     this.lexems = lexems;
+    this.outputPath = outputPath;
   }
 
   // Метод получения следующей лексемы
@@ -47,11 +49,12 @@ export class SyntaxAnalyzer {
     let endWord = this.assignation(this.getNext());
 
     // Если это не лексема "End", то список присвоения не закончился
-    while (endWord.type !== "keyWords" && endWord.value !== "End") {
+    while (endWord.type !== "keyWords" || endWord.value !== "End") {
       endWord = this.assignation(endWord);
     }
 
     // Если вышли из цикла - все успешно
+    writeOutputToFile(this.outputPath, "Finished without errors!");
     console.log("\x1b[32m", "Finished without errors!");
   }
 
@@ -81,6 +84,7 @@ export class SyntaxAnalyzer {
   private assignation(ident: Lexem): any {
     // DEBUG
     this.assignationCount = this.assignationCount + 1;
+    // console.log(`assignation`, ident);
 
     // Ошибка если не идентификатор
     if (!ident || ident.type !== "identifier") {
@@ -96,7 +100,9 @@ export class SyntaxAnalyzer {
     }
 
     // За символом присвоения идет проверка подвыражения (+ проверка на унарный оператор)
-    return this.subExpression(this.checkForUnary(this.getNext()));
+    const testSubExp = this.subExpression(this.checkForUnary(this.getNext()));
+    // console.log("testSubExp", testSubExp);
+    return testSubExp;
   }
 
   // Проверка подвыражения
@@ -136,7 +142,9 @@ export class SyntaxAnalyzer {
     }
 
     // Проверяем на бинарный оператор и выходим из подвыражения
-    return this.checkForBinary(this.getNext());
+    const testNext = this.getNext();
+    // console.log("testNext", testNext);
+    return this.checkForBinary(testNext);
   }
 
   // Проверка унарного оператора
@@ -178,6 +186,7 @@ export class SyntaxAnalyzer {
     const fullError = `${message}. At ${lexemWithError.getValueAndPositionAsString()}`;
 
     console.log("\x1b[31m", fullError, "\x1b[0m", "\n");
+    writeOutputToFile(this.outputPath, fullError);
 
     throw Error(fullError);
   }

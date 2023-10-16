@@ -10,7 +10,7 @@ const analyzer = new LexemAnalyzer(data);
 const { resultJson, resultString } = analyzer.run();
 
 // Запись результата в файл
-writeOutputToFile("./output.txt", resultString);
+writeOutputToFile("./lexemOutput.txt", resultString);
 
 // Если в лексическом анализе были ошибки, то выводим их и не начинаем синтаксический анализ
 if (resultJson.errors.length > 0) {
@@ -23,7 +23,7 @@ if (resultJson.errors.length > 0) {
 }
 
 // Экземпляр синтаксического анализатора
-const syntaxAnalyzer = new SyntaxAnalyzer(resultJson.lexems);
+const syntaxAnalyzer = new SyntaxAnalyzer(resultJson.lexems, "./syntaxOutput.txt");
 
 // Запуск анализатора
 syntaxAnalyzer.run();
