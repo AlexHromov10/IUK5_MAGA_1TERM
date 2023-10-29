@@ -13,7 +13,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/activedirectory2": "^1.2.5",
     "@types/ldapjs": "^3.0.3",
     "@types/node": "^20.7.0",
     "nodemon": "^3.0.1",
@@ -21,8 +20,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "activedirectory2": "^2.2.0",
     "ldapjs": "^3.0.5",
-    "passport-ldapauth": "^3.0.1"
+    "ldapts": "^7.0.6"
   }
 }

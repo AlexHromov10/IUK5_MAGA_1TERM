@@ -1,5 +1,4 @@
-import ActiveDirectory from "activedirectory2";
-import { LdapJsClient } from "./ldap";
+import { LdapJsClient, LdapTsClient } from "./ldap";
 
 const options = {
   port: 389,
@@ -11,40 +10,42 @@ const options = {
   cn: "Administrator",
 };
 
-async function ldapjsStart() {
-  const ldapjs = new LdapJsClient({
-    url: options.url,
-  });
-
+async function ldapJsStart() {
   try {
-    const auth = await ldapjs.auth(options.bindDn, options.password);
-    console.log("isAuth:", auth);
+    const ldapJs = new LdapJsClient({
+      url: options.url,
+    });
 
-    const data = await ldapjs.search(options.bindDn, options.uid);
-    console.log(`data: ${JSON.stringify(data, null, 2)}`);
+    await ldapJs.auth(options.bindDn, options.password);
+
+    return await ldapJs.search(options.bindDn, options.uid);
   } catch (error) {
     console.log("Error:", error);
   }
 }
 
-async function ad2Start() {
-  const config = {
-    url: options.url,
-    baseDN: options.baseDn,
-    username: options.uid,
-    password: options.password,
-  };
-  const ad = new ActiveDirectory(config);
+async function ldapTsStart() {
+  try {
+    const ldapTs = new LdapTsClient({
+      url: options.url,
+    });
 
-  ad.findUser(options.bindDn, (err, user) => {
-    if (err) {
-      console.log("ADError:", err);
-      return;
-    }
+    await ldapTs.auth(options.bindDn, options.password);
 
-    console.log("user:", user);
-  });
+    return await ldapTs.search(options.bindDn, options.uid);
+  } catch (error) {
+    console.log("Error:", error);
+  }
 }
 
-// ldapjsStart();
-ad2Start();
+async function start() {
+  console.time("ldapjs");
+  await ldapJsStart();
+  console.timeEnd("ldapjs");
+
+  console.time("ldapts");
+  await ldapTsStart();
+  console.timeEnd("ldapts");
+}
+
+start();
