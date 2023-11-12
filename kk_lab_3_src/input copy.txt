@@ -1,0 +1,10 @@
+Var a,b;c,d
+
+Begin
+  a := 1
+  b := 2
+  b := sf+sf+sf
+  f := ((cs+fs+ds))
+  f := -(-(-c/f*d-(d)))
+  n := (a+b)-(c)-(s)*(-(-c/f*d-(d)))
+End
