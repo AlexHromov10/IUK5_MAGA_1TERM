@@ -26,19 +26,22 @@ export class LdapJsClient {
 
   async search(baseDn: string, uid: string) {
     const options: SearchOptions = {
-      filter: `(uid=${uid})`,
+      filter: `cn=users`,
       scope: "sub",
     };
 
     let found = false;
+
+    let entries: any[] = [];
 
     return new Promise((resolve, reject) => {
       this.client.search(baseDn, options, (err, res) => {
         if (err) reject(err);
 
         res.on("searchEntry", (entry) => {
+          console.log("FOUND ENTRY", JSON.stringify(entry.attributes, null, 2));
           found = true;
-          resolve(entry);
+          entries.push(JSON.stringify(entry.attributes, null, 2));
         });
 
         res.on("error", (err) => {
@@ -48,6 +51,8 @@ export class LdapJsClient {
         res.on("end", (result) => {
           if (!found) {
             reject(result?.status);
+          } else {
+            resolve(entries);
           }
         });
       });
