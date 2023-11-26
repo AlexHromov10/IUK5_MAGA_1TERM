@@ -1,0 +1,8 @@
+Var a,b,c,d
+
+Begin
+  a := 1
+  b := 2
+  c := (5*(10+3))
+  d := ((a * (b + c) ) / a)
+End
